@@ -1,0 +1,29 @@
+version: "3"
+services:
+  pihole:
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/udp"
+      - "80:80/tcp"
+      #- "443:443/tcp" # SSL Version
+      #- "53:53/tcp" # DNS over tcp?
+      #- "67:67/udp" # DHCP?
+    environment:
+
+      ServerIP: 192.168.2.192 # AKA "pi.hole"
+
+      DNS1: 192.168.1.1
+      DNS2: 8.8.8.8
+
+      IPv6: "False"
+      WEBPASSWORD: "" 
+
+    labels:
+      kompose.service.type: LoadBalancer
+
+    volumes:
+      - 'etc-pihole:/etc/pihole/'
+      # WARNING: if this log don't exist as a file on the host already
+      # docker will try to create a directory in it's place making for lots of errors
+      #- 'var-log:/var/log/'
+    restart: always
