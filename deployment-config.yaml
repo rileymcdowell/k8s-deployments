@@ -5,6 +5,10 @@ pihole:
 docker-registry:
   ip-address: "192.168.2.193"
   external-traffic-policy: "Cluster" # The default
+       
+terrarium:
+  ip-address: "192.168.2.194"
+  external-traffic-policy: "Cluster" # The default
 
 tester:
   ip-address: "192.168.2.195"

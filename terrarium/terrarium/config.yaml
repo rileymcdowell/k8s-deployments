@@ -1,0 +1,23 @@
+light-1: aaa
+light-2: bbb
+fan: ccc
+fogger: ddd    
+
+lights:
+  - light-1
+  - light-2 
+
+default-state:
+    light-1: on
+    light-2: on
+    fan: off
+    fogger: off
+
+apscheduler-config:
+  apscheduler.jobstores.default:
+    class: "apscheduler.jobstores.redis:RedisJobStore"
+    host: "terrarium-redis"
+  apscheduler.executors.default:
+    class: "apscheduler.executors.pool:ThreadPoolExecutor"
+    max_workers: 1
+  apscheduler.timezone: "US/Central"
