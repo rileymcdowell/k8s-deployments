@@ -14,6 +14,12 @@ import copy
 import yaml
 import codecs
 
+with open('../../deployment-config.yaml') as f:
+    config = yaml.load(f)
+
+ip_address = config['pihole']['ip-address']
+external_traffic_policy = config['pihole']['external-traffic-policy']
+
 if os.path.exists('./pihole-service.yaml'):
     os.rename('./pihole-service.yaml', './pihole-service.yaml.bak')
 
@@ -31,8 +37,8 @@ for port in tcp_data['spec']['ports']:
 tcp_data['spec']['ports'] = keep_ports
 tcp_data['metadata']['name'] += '-tcp'
 tcp_data['metadata']['annotations']['metallb.universe.tf/allow-shared-ip'] = 'pihole'
-tcp_data['spec']['loadBalancerIP'] = "192.168.2.192"
-tcp_data['spec']['externalTrafficPolicy'] = "Local"
+tcp_data['spec']['loadBalancerIP'] = ip_address
+tcp_data['spec']['externalTrafficPolicy'] = external_traffic_policy
 with open('./pihole-service-tcp.yaml', 'w', encoding='utf-8') as f:
     yaml.dump(tcp_data, f)
 
@@ -47,8 +53,8 @@ for port in udp_data['spec']['ports']:
 udp_data['spec']['ports'] = keep_ports
 udp_data['metadata']['name'] += '-udp'
 udp_data['metadata']['annotations']['metallb.universe.tf/allow-shared-ip'] = 'pihole'
-udp_data['spec']['loadBalancerIP'] = "192.168.2.192"
-udp_data['spec']['externalTrafficPolicy'] = "Local"
+udp_data['spec']['loadBalancerIP'] = ip_address
+udp_data['spec']['externalTrafficPolicy'] = external_traffic_policy
 with open('./pihole-service-udp.yaml', 'w', encoding='utf-8') as f:
     yaml.dump(udp_data, f)
 

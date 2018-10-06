@@ -1,0 +1,7 @@
+pihole:
+  ip-address: "192.168.2.192"
+  external-traffic-policy: "Local" # Modified so source IP of requestor is known for logging 
+
+docker-registry:
+  ip-address: "192.168.2.193"
+  external-traffic-policy: "Cluster" # The default
