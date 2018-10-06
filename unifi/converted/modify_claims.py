@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+"""
+Adjust the size of persistent volume claims as needed.
+
+"""
+
+import os
+import copy
+import yaml
+import codecs
+
+mongo_claim = "unifi-mongo-config-persistentvolumeclaim"
+mongo_stat_claim = "unifi-mongo-stat-persistentvolumeclaim"
+for claim, size in [(mongo_claim, '200Mi'), (mongo_stat_claim, '500Mi')]:
+
+    raw = './' + claim + '.yaml'
+    raw_bak = raw + '.bak'
+    out = './' + claim + '-out.yaml'
+
+    if os.path.exists(raw):
+        os.rename(raw, raw_bak)
+
+    with open(raw_bak) as f:
+        data = yaml.load(f)
+
+    data['spec']['resources']['requests']['storage'] = size
+
+    with open(out, 'w', encoding='utf-8') as f:
+        yaml.dump(data, f, default_flow_style=False)
+
+

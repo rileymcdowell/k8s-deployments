@@ -13,3 +13,7 @@ terrarium:
 tester:
   ip-address: "192.168.2.195"
   external-traffic-policy: "Cluster" # The default
+
+unifi:
+  ip-address: "192.168.2.196"
+  external-traffic-policy: "Cluster" # The default
