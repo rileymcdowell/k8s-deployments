@@ -13,7 +13,6 @@ services:
       ServerIP: 192.168.2.192 # AKA "pi.hole"
 
       DNS1: 192.168.1.1
-      DNS2: 8.8.8.8
 
       IPv6: "False"
       WEBPASSWORD: "" 
