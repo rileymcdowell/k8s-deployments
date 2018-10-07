@@ -3,9 +3,13 @@ services:
   docker-registry:
     image: registry:2.6.2
     ports:
-      - "443:5000/tcp"
+      - "443:443/tcp"
     labels:
       kompose.service.type: LoadBalancer
+    environment:
+      REGISTRY_HTTP_ADDR: "0.0.0.0:443"
+      REGISTRY_HTTP_TLS_CERTIFICATE: "/certs/docker.lan.crt"
+      REGISTRY_HTTP_TLS_KEY: "/certs/docker.lan.key"
     volumes:
       - 'docker-registry:/var/lib/registry/'
     restart: always
