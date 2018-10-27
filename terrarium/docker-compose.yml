@@ -1,0 +1,20 @@
+version: "3.2"
+
+services:
+  terrarium-app:
+    image: docker.lan/terrarium
+    ports:
+      - "80:80/tcp" # The interface
+    labels:
+      kompose.service.type: LoadBalancer
+    restart: always
+    depends_on:
+      - redis
+
+  terrarium-redis:
+    image: redis:4.0.11-alpine
+    volumes:
+      - "terrarium-redis:/data"
+    ports:
+      - "6379:6379" # Redis default port
+    restart: always
