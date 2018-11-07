@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+    unifi-web:
+        image: jacobalberty/unifi:5.9.29
+        environment:
+            RUNAS_UID0: "false"
+            TZ: "America/Chicago"
+            DB_URI: "mongodb://mongo-user:mongo-password@unifi-mongo-config:27017/admin"
+            STATDB_URI: "mongodb://mongo-user:mongo-password@unifi-mongo-stat:27017/admin"
+            DB_NAME: "unifi-db"
+        ports:
+          - "8080:8080/tcp"   # Device command/control
+          - "8443:8443/tcp"   # Web Interface + API
+          - "8843:8843/tcp"   # HTTPS Portal
+          - "8880:8880/tcp"   # HTTP Portal
+          - "3478:3478/udp"   # STUN Service
+          #- "6789:6789/tcp" # Speed Test (not used).
+          #- "10001:10001/udp" # Autodiscovery (not used).
+        depends_on:
+          - unii-mongo-config
+          - unifi-mongo-stat
+        labels:
+            kompose.service.type: LoadBalancer
+            
+    unifi-mongo-config:
+        image: mongo:4.0.2
+        ports:
+          - "27017:27017/tcp"
+        volumes:
+          - "unifi-mongo-config:/data/db"
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo-user
+            MONGO_INITDB_ROOT_PASSWORD: mongo-password
+
+    unifi-mongo-stat:
+        image: mongo:4.0.2
+        ports:
+          - "27017:27017/tcp"
+        volumes:
+          - "unifi-mongo-stat:/data/db"
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: mongo-user
+            MONGO_INITDB_ROOT_PASSWORD: mongo-password
