@@ -16,7 +16,7 @@ time.sleep(10) # Wait for redis container to start.
 # Logging stuff
 logging.basicConfig()
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 # Configuration stuff
 WEMO_DEVICES = {}
