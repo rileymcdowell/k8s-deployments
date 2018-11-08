@@ -17,6 +17,8 @@ services:
           - "3478:3478/udp"   # STUN Service
           #- "6789:6789/tcp" # Speed Test (not used).
           #- "10001:10001/udp" # Autodiscovery (not used).
+        volumes:
+          - "unifi-web-config:/unifi/data"
         depends_on:
           - unii-mongo-config
           - unifi-mongo-stat

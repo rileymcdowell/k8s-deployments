@@ -12,7 +12,8 @@ import codecs
 
 mongo_claim = "unifi-mongo-config-persistentvolumeclaim"
 mongo_stat_claim = "unifi-mongo-stat-persistentvolumeclaim"
-for claim, size in [(mongo_claim, '200Mi'), (mongo_stat_claim, '500Mi')]:
+unifi_web_config_claim = "unifi-web-config-persistentvolumeclaim"
+for claim, size in [(mongo_claim, '200Mi'), (mongo_stat_claim, '500Mi'), (unifi_web_config_claim, '100Mi')]:
 
     raw = './' + claim + '.yaml'
     raw_bak = raw + '.bak'
