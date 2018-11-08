@@ -1,7 +1,7 @@
 version: "3"
 services:
   pihole:
-    image: pihole/pihole:latest
+    image: pihole/pihole:4.0.0-1
     ports:
       - "53:53/udp"
       - "80:80/tcp"
@@ -12,7 +12,8 @@ services:
 
       ServerIP: 192.168.2.192 # AKA "pi.hole"
 
-      DNS1: 192.168.1.1
+      DNS1: "192.168.1.1"
+      DNS2: "no"
 
       IPv6: "False"
       WEBPASSWORD: "" 
