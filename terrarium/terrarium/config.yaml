@@ -1,18 +1,26 @@
-light-1: aaa
-light-2: bbb
-fan: ccc
-fogger: ddd    
+# DEVICES
+device_to_code:
+    light: aaa
+    fan: bbb
+    fogger: ccc
 
-lights:
-  - light-1
-  - light-2 
+code_to_device:
+    aaa: light
+    bbb: fan
+    ccc: fogger
 
 default-state:
-    light-1: on
-    light-2: on
+    light: on
     fan: off
     fogger: off
 
+# TASKS
+fan_n_fog:
+    fan_time: 30 # Seconds
+    wait_time: 10 # Seconds
+    fog_time: 60 # Seconds
+
+# SCHEDULER
 apscheduler-config:
   apscheduler.jobstores.default:
     class: "apscheduler.jobstores.redis:RedisJobStore"

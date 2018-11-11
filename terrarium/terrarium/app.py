@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import time
 import yaml
 import datetime
@@ -18,14 +17,18 @@ logging.basicConfig()
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-# Configuration stuff
+# Globals
 WEMO_DEVICES = {}
+CONFIG = None
+
+# Read configuration stuff
 with open('./config.yaml', 'rb') as f:
     CONFIG = yaml.load(f)
 
 # The Wemo stuff
 def found_device(device):
     print('Found WEMO device {}'.format(device))
+    # Wemo environment device name is the "code" name
     WEMO_DEVICES[device.name] = device
 
 def refresh_wemo_devices():
@@ -42,15 +45,16 @@ def refresh_wemo_devices():
 refresh_wemo_devices()
 
 def reset_wemo_devices():
-    for device, state in six.iteritems(CONFIG['default-state']):
-        if not CONFIG[device] in WEMO_DEVICES:
-            logger.warn('Wemo Device {} not found'.format(device))
+    for device_name, state in six.iteritems(CONFIG['default-state']):
+        device_code = CONFIG['device_to_code'][device_name]
+        if not device_code in WEMO_DEVICES:
+            logger.warn('Wemo Device {}/{} not found'.format(device_name, device_code))
             logger.warn('Cannot set default state of {}'.format(state))
             continue
         if state is True:
-            WEMO_DEVICES[CONFIG[device]].on()
+            WEMO_DEVICES[device_code].on()
         elif state is False:
-            WEMO_DEVICES[CONFIG[device]].off()
+            WEMO_DEVICES[device_code].off()
         else:
             raise NotImplementedError("Unknown Device State {}".format(state))
 
@@ -59,13 +63,13 @@ reset_wemo_devices()
 # The apscheduler stuff
 def fan_n_fog():
     logger.info('Triggered fan and fog')
-    WEMO_DEVICES[CONFIG['fan']].on()
-    time.sleep(15)
-    WEMO_DEVICES[CONFIG['fan']].off()
-    time.sleep(5)
-    WEMO_DEVICES[CONFIG['fogger']].on()
-    time.sleep(30)
-    WEMO_DEVICES[CONFIG['fogger']].off()
+    WEMO_DEVICES[CONFIG['device_to_code']['fan']].on()
+    time.sleep(CONFIG['fan_n_fog']['fan_time'])
+    WEMO_DEVICES[CONFIG['device_to_code']['fan']].off()
+    time.sleep(CONFIG['fan_n_fog']['wait_time'])
+    WEMO_DEVICES[CONFIG['device_to_code']['fogger']].on()
+    time.sleep(CONFIG['fan_n_fog']['fog_time'])
+    WEMO_DEVICES[CONFIG['device_to_code']['fogger']].off()
 
 try:
     scheduler = BackgroundScheduler(CONFIG['apscheduler-config'])
@@ -85,8 +89,8 @@ app = Flask(__name__)
 @app.route('/')
 def ping():
 
-    items = [d for d in WEMO_DEVICES]
-    html_items = '\n'.join(['<li>Wemo Device "{}"</li>'.format(i) for i in items])
+    device_codes = [d for d in WEMO_DEVICES]
+    html_items = '\n'.join(['<li>Wemo Device "{}"</li>'.format(i) for i in device_codes])
     now = datetime.datetime.now().strftime('%I:%M %p %Z')
 
     HTML = """
@@ -109,18 +113,25 @@ def ping():
     """.format(now, html_items)
     return HTML
 
-def lights_back_on():
-    for light in CONFIG['lights']:
-        WEMO_DEVICES[CONFIG[light]].on()
+def light_back_on():
+    light_code = CONFIG['device_to_code']['light']
+    if light_code in WEMO_DEVICES:
+        WEMO_DEVICES[light_code].on()
+    else:
+        five_minutes_later = datetime.datetime.now() + datetime.timedelta(minutes=5)
+        msg = "Light {} not found. Rescheduling for {}"
+        logger.warning(msg.format(light_code, five_minutes_later))
+        scheduler.add_job(light_back_on, trigger=DateTrigger(run_date=five_minutes_later))
 
 @app.route('/lightsoff/<int:minutes>')
 def lightsout(minutes):
     logger.info('Lights out! {} minutes'.format(minutes))
-    for light in CONFIG['lights']:
-        WEMO_DEVICES[CONFIG[light]].off()
+    light_code = CONFIG['device_to_code']['light']
+    if light_code in WEMO_DEVICES:
+        WEMO_DEVICES[light_code].off()
 
     back_on_date = datetime.datetime.now() + datetime.timedelta(minutes=minutes)
-    scheduler.add_job(lights_back_on, trigger=DateTrigger(run_date=back_on_date))
+    scheduler.add_job(light_back_on, trigger=DateTrigger(run_date=back_on_date))
 
     HTML = """
     <h3>Your will be done</h3>
