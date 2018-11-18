@@ -4,6 +4,8 @@ import yaml
 import datetime
 import logging
 import six
+import traceback
+
 from flask import Flask
 from ouimeaux.environment import Environment
 
@@ -35,11 +37,10 @@ def refresh_wemo_devices():
     global WEMO_DEVICES
     WEMO_DEVICES = {}
     try:
-        env = Environment(found_device, config_filename='./wemo-config.yaml')
+        env = Environment(found_device, with_subscribers=False, config_filename='./wemo-config.yaml')
         env.start()
         env.discover(seconds=5)
     except Exception as e:
-        import traceback
         logger.error(traceback.format_exc())
 
 refresh_wemo_devices()
@@ -78,7 +79,6 @@ try:
     scheduler.add_job(refresh_wemo_devices, trigger='cron', hour="*", minute=0)
     scheduler.start()
 except Exception as e:
-    import traceback
     logger.error(traceback.format_exc())
 
 logger.info("Creating Flask App")
@@ -114,14 +114,42 @@ def ping():
     return HTML
 
 def light_back_on():
+    """
+    A surprisingly complex function because of the number of possible
+    error conditions when turning on a light.
+    """
     light_code = CONFIG['device_to_code']['light']
-    if light_code in WEMO_DEVICES:
-        WEMO_DEVICES[light_code].on()
-    else:
-        five_minutes_later = datetime.datetime.now() + datetime.timedelta(minutes=5)
-        msg = "Light {} not found. Rescheduling for {}"
-        logger.warning(msg.format(light_code, five_minutes_later))
-        scheduler.add_job(light_back_on, trigger=DateTrigger(run_date=five_minutes_later))
+    light_exists = light_code in WEMO_DEVICES
+
+    # Guess-and-check pattern for if this worked.
+    worked = True
+    error = None
+
+    try:
+        # If the light exists, turn it on and make sure it stays that way.
+        if light_exists:
+            WEMO_DEVICES[light_code].on()
+            time.sleep(CONFIG['light_toggle']['wait_time'])
+            if WEMO_DEVICES[light_code].get_state(force_update=True) == False:
+                error = "Light {} didn't obtain the 'on' state".format(light_code)
+                worked = False
+        # If the light doesn't exist, record that too.
+        else:
+            error = "Light {} not found".format(light_code)
+            worked = False
+    except:
+        # Any kind of error in this process should trigger a retry.
+        logger.error(traceback.format_exc())
+        error = "Error during turning on light"
+        worked = False
+
+    # Handle the failure if needed
+    if not worked:
+        fail_wait_time = CONFIG['light_toggle']['fail_wait_time']
+        retry_time = datetime.datetime.now() + datetime.timedelta(minutes=fail_wait_time)
+        msg = "{}. Rescheduling for {}".format(error, retry_time)
+        logger.warning(msg)
+        scheduler.add_job(light_back_on, trigger=DateTrigger(run_date=retry_time))
 
 @app.route('/lightsoff/<int:minutes>')
 def lightsout(minutes):

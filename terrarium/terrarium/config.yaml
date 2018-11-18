@@ -20,6 +20,10 @@ fan_n_fog:
     wait_time: 10 # Seconds
     fog_time: 60 # Seconds
 
+light_toggle:
+    wait_time: 10 # Seconds
+    fail_wait_time: 5 # Minutes
+
 # SCHEDULER
 apscheduler-config:
   apscheduler.jobstores.default:
