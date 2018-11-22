@@ -17,3 +17,7 @@ tester:
 unifi:
   ip-address: "192.168.2.196"
   external-traffic-policy: "Cluster" # The default
+
+k8s-dashboard:
+  ip-address: "192.168.2.197"
+  external-traffic-policy: "Cluster" # The default
