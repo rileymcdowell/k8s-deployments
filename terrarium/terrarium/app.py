@@ -61,6 +61,10 @@ def reset_wemo_devices():
 
 reset_wemo_devices()
 
+def daily_darkness():
+    # Go dark every day automatically.
+    lightsout(CONFIG['daily_darkness']['duration'])
+
 # The apscheduler stuff
 def fan_n_fog():
     logger.info('Triggered fan and fog')
@@ -74,9 +78,15 @@ def fan_n_fog():
 
 try:
     scheduler = BackgroundScheduler(CONFIG['apscheduler-config'])
-    # TODO: switch to hourly.
-    scheduler.add_job(fan_n_fog, trigger='cron', hour="*", minute=1)
-    scheduler.add_job(refresh_wemo_devices, trigger='cron', hour="*", minute=0)
+    scheduler.add_job( fan_n_fog, trigger='cron'
+                     , hour="*"
+                     , minute=1)
+    scheduler.add_job( refresh_wemo_devices, trigger='cron'
+                     , hour="*"
+                     , minute=0)
+    scheduler.add_job( daily_darkness, trigger='cron'
+                     , hour=CONFIG['daily_darkness']['begin_hour']
+                     , minute=CONFIG['daily_darkness']['begin_minute'])
     scheduler.start()
 except Exception as e:
     logger.error(traceback.format_exc())
@@ -107,6 +117,8 @@ def ping():
     <li><h5><a href="/lightsoff/60">Lights off for one hour</a></h5></li>
     <li><h5><a href="/lightsoff/120">Lights off for two hours</a></h5></li>
     <li><h5><a href="/lightsoff/240">Lights off for four hours</a></h5></li>
+    <li><h5><a href="/lightsoff/360">Lights off for six hours</a></h5></li>
+    <li><h5><a href="/lightsoff/480">Lights off for eight hours</a></h5></li>
     </ul>
     Brought to you by Docker and Kubernetes!
     </body>

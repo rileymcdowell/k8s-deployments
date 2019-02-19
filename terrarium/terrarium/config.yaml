@@ -16,13 +16,18 @@ default-state:
 
 # TASKS
 fan_n_fog:
-    fan_time: 30 # Seconds
-    wait_time: 10 # Seconds
-    fog_time: 60 # Seconds
+    fan_time: 45 # Seconds
+    wait_time: 15 # Seconds
+    fog_time: 90 # Seconds
 
 light_toggle:
     wait_time: 10 # Seconds
     fail_wait_time: 5 # Minutes
+
+daily_darkness:
+    duration: 360 # Minutes
+    begin_hour: 19 # 24-hour time
+    begin_minute: 5 # Minutes past hour
 
 # SCHEDULER
 apscheduler-config:
