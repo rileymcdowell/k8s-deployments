@@ -14,6 +14,9 @@ python3 modify_deployment.py
 popd
 
 # Create the certificate kubernetes "generic" secret to mount as files
-kubectl create secret generic docker-registry-cert --from-file=./certs/docker.lan.crt --from-file=./certs/docker.lan.key
+kubectl create secret generic \
+    docker-registry-cert \
+    --from-file=./certs/docker.lan.crt \
+    --from-file=./certs/docker.lan.key
 
 kubectl apply -Rf converted
