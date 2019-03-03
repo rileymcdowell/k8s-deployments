@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+    smtp:
+        image: tozd/postfix:ubuntu-trusty
+        environment:
+            TZ: "America/Chicago"
+            MY_NETWORKS: 127.0.0.0/8 192.168.0.0/16
+            MY_DESTINATION: localhost localhost.localdomain mail.lan
+            MAILNAME: smtp.lan
+        ports:
+          - "25:25/tcp"     # Unsecured SMTP
+          - "587:587/tcp"   # TLS-Based SMTP
+          - "465:465/tcp"   # SSL-Based SMTP (deprecated)
+        volumes:
+          - "smtp-spool:/var/spool/postfix"
+        labels:
+            kompose.service.type: LoadBalancer
+

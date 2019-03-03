@@ -21,3 +21,7 @@ unifi:
 k8s-dashboard:
   ip-address: "192.168.2.197"
   external-traffic-policy: "Cluster" # The default
+
+smtp:
+  ip-address: "192.168.2.198"
+  external-traffic-policy: "Local" # Postfix needs to know if the source is on the local network.

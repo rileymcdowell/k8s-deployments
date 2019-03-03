@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Make the sasl password database file.
+postmap /etc/postfix/sasl/sasl_passwd
+
+if [ ! -f /etc/ssl/certs/ca-certificates.crt ] ; then
+    apt install ca-certificates
+    echo 'Installed ca-certs'
+fi
+
+sed -i 's/^relayhost.*//g' /etc/postfix/main.cf # Set this below instead
+
+# Enable ports 587 and 465
+sed -i 's/^#submission/submission/g' /etc/postfix/master.cf 
+sed -i 's/^#smtps/smtps/g' /etc/postfix/master.cf 
+
+# Append to the postfix config
+cat << 'EOF' >> /etc/postfix/main.cf
+
+# Enable TLS
+smtp_use_tls = yes
+smtpd_tls_cert_file=/etc/postfix/certs/smtp.lan.pem
+smtpd_tls_key_file=/etc/postfix/certs/smtp.lan.key
+smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
+smtp_tls_CAfile = /etc/ssl/certs/ca-certificates.crt
+
+# Set the relay host to gmail
+relayhost = [smtp.gmail.com]:587
+
+# Enable SASL authentication
+smtp_sasl_auth_enable = yes
+smtp_sasl_security_options =
+smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
+smtp_sasl_path = /var/spool/postfix
+
+EOF
+
+
