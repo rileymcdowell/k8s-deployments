@@ -77,10 +77,15 @@ def update_role_binding():
     role_binding['roleRef']['name'] = 'kubernetes-dashboard-readonly'
     role_binding['roleRef']['kind'] = 'ClusterRole'
 
+def modify_deployment():
+    deployment = [x for x in raw_data if x['kind'] == 'Deployment'][0]
+    deployment['spec']['template']['spec']['containers'][0]['args'].append('--enable-skip-login')
+
 update_role_binding()
 modify_role()
 remove_cert_secret()
 add_load_balancer()
+modify_deployment()
 
 # Write it out with the hange.
 with open('./kubernetes-dashboard.out.yaml', 'w', encoding='utf-8') as f:

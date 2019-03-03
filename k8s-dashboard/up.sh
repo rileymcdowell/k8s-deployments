@@ -2,7 +2,7 @@
 set -e
 
 wget \
-    https://raw.githubusercontent.com/kubernetes/dashboard/master/src/deploy/recommended/kubernetes-dashboard.yaml \
+    https://raw.githubusercontent.com/kubernetes/dashboard/v1.10.1/src/deploy/recommended/kubernetes-dashboard.yaml \
     -O ./converted/kubernetes-dashboard.yaml
 
 # Modify to use a load balancer and remove security restrictions
