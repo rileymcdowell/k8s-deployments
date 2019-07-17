@@ -1,7 +1,7 @@
 version: "3"
 services:
   docker-registry:
-    image: registry:2.6.2
+    image: registry:2.7.1
     ports:
       - "443:443/tcp"
     labels:

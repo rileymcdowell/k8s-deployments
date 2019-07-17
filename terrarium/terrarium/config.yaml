@@ -25,7 +25,7 @@ light_toggle:
     fail_wait_time: 5 # Minutes
 
 daily_darkness:
-    duration: 360 # Minutes
+    duration: 500 # Minutes
     begin_hour: 19 # 24-hour time
     begin_minute: 5 # Minutes past hour
 
