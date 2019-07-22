@@ -21,7 +21,7 @@ with open(redis_raw_bak) as f:
     redis_data = yaml.load(f)
 
 # Configure total storage required.
-redis_data['spec']['resources']['requests']['storage'] = "25Mi"
+redis_data['spec']['resources']['requests']['storage'] = "50Mi"
 
 with open(redis_out, 'w', encoding='utf-8') as f:
     yaml.dump(redis_data, f, default_flow_style=False)

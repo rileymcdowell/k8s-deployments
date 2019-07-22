@@ -22,7 +22,7 @@ with open(claim_raw_bak) as f:
     claim_data = yaml.load(f)
 
 # First configure /etc/pihole
-claim_data['spec']['resources']['requests']['storage'] = "5Mi"
+claim_data['spec']['resources']['requests']['storage'] = "250Mi"
 
 with open(claim_out, 'w', encoding='utf-8') as f:
     yaml.dump(claim_data, f, default_flow_style=False)
