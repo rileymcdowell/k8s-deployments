@@ -5,7 +5,7 @@ pihole:
 docker-registry:
   ip-address: "192.168.2.193"
   external-traffic-policy: "Cluster" # The default
-       
+
 terrarium:
   ip-address: "192.168.2.194"
   external-traffic-policy: "Cluster" # The default
@@ -25,3 +25,7 @@ k8s-dashboard:
 smtp:
   ip-address: "192.168.2.198"
   external-traffic-policy: "Local" # Postfix needs to know if the source is on the local network.
+
+docker-registry-ui:
+  ip-address: "192.168.2.199"
+  external-traffic-policy: "Cluster" # The default
