@@ -11,7 +11,7 @@ import copy
 import yaml
 import codecs
 
-with open('../../deployment-config.yaml') as f:
+with open(os.path.expanduser('~/deployment-config.yaml')) as f:
     config = yaml.load(f)
 
 ip_address = config['tester']['ip-address']

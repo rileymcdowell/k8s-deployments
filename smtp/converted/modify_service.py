@@ -9,7 +9,7 @@ import yaml
 
 NAME = 'smtp'
 
-with open('../../deployment-config.yaml') as f:
+with open(os.path.expanduser('~/deployment-config.yaml')) as f:
     config = yaml.load(f)
     
 ip_address = config[NAME]['ip-address']

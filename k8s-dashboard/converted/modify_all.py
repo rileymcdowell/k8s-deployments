@@ -13,7 +13,7 @@ import codecs
 
 config_key = 'k8s-dashboard'
 
-with open('../../deployment-config.yaml') as f:
+with open(os.path.expanduser('~/deployment-config.yaml')) as f:
     config = yaml.load(f)
 
 ip_address = config[config_key]['ip-address']
