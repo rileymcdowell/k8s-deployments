@@ -1,0 +1,27 @@
+version: "3"
+
+services:
+    unifi-video:
+        image: pducharme/unifi-video-controller:3.10.6
+        environment:
+            TZ: "America/Chicago"
+            DEBUG: 1
+            PUID: 1000
+            PGID: 1000
+        ports:
+          - "1935:1935"
+          - "6666:6666"
+          - "7080:7080"
+          - "7442:7442"
+          - "7443:7443"
+          - "7444:7444"
+          - "7445:7445"
+          - "7446:7446"
+          - "7447:7447"
+          #- "10001:10001/udp" # Autodiscovery (not used).
+        volumes:
+          - "unifi-video:/var/lib/unifi-video"
+          - "unifi-video-vids:/var/lib/unifi-video/videos"
+        labels:
+            kompose.service.type: LoadBalancer
+            
