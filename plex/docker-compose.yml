@@ -1,0 +1,28 @@
+version: "3"
+
+services:
+    plex:
+        image: plexinc/pms-docker
+        environment:
+            TZ: "America/Chicago"
+            HOSTNAME: "plex.lan"
+            PLEX_UID: 1000
+            PLEX_GID: 1000
+        ports:
+          - "22:22/tcp"
+          - "32400:32400/tcp"
+          - "3005:3005/tcp"
+          - "8324:8324/tcp"
+          - "32469:32469/tcp"
+          - "1900:1900/udp"
+          - "32410:32410/udp"
+          - "32412:32412/udp"
+          - "32413:32413/udp"
+          - "32414:32414/udp"
+        volumes:
+          - "plex-config:/config"
+          - "plex-transcode:/transcode"
+          - "plex-media:/data"
+        labels:
+            kompose.service.type: LoadBalancer
+            
