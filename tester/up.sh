@@ -7,6 +7,7 @@ fi
 kompose convert --out converted
 
 pushd converted
+python3 modify_deployment.py
 python3 modify_service.py
 python3 modify_claims.py
 popd
