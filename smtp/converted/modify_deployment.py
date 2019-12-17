@@ -32,6 +32,11 @@ if os.path.exists(old_path):
 with open(bak_path) as f:
     data = yaml.load(f)
 
+# Convert to new api
+data['apiVersion'] = 'apps/v1'
+data['spec']['selector'] = { 'matchLabels': copy.deepcopy(data['metadata']['labels']) }
+
+
 # Get the volume mounts and volumes.
 volumes = data['spec']['template']['spec']['volumes']
 volume_mounts = data['spec']['template']['spec']['containers'][0]['volumeMounts']

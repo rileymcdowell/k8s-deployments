@@ -15,6 +15,10 @@ if os.path.exists('./unifi-video-deployment.yaml'):
 with open('./unifi-video-deployment.yaml.bak') as f:
     data = yaml.load(f)
 
+# Update to release k8s api
+data['apiVersion'] = 'apps/v1'
+data['spec']['selector'] = { 'matchLabels': copy.deepcopy(data['metadata']['labels']) }
+
 # Add the CAP_SYS_ADMIN and CAP_DAC_READ_SEARCH capabilities 
 # to match the docker run command documented for the image.
 container = data['spec']['template']['spec']['containers'][0]

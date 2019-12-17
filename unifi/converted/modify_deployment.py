@@ -17,6 +17,10 @@ if os.path.exists('./unifi-web-deployment.yaml'):
 with open('./unifi-web-deployment.yaml.bak') as f:
     data = yaml.load(f)
 
+# Switch to apps/v1 api from previous beta api
+data['apiVersion'] = 'apps/v1'
+data['spec']['selector'] = { 'matchLabels': copy.deepcopy(data['metadata']['labels']) }
+
 # Get the volume mounts and volumes.
 if not 'volumeMounts' in data['spec']['template']['spec']['containers'][0]:
     data['spec']['template']['spec']['containers'][0]['volumeMounts'] = []
@@ -43,3 +47,20 @@ with open('./unifi-web-deployment.out.yaml', 'w', encoding='utf-8') as f:
     yaml.dump(data, f, default_flow_style=False)
 
 
+with open('./unifi-mongo-stat-deployment.yaml') as f:
+    data = yaml.safe_load(f)
+
+data['apiVersion'] = 'apps/v1'
+data['spec']['selector'] = { 'matchLabels': copy.deepcopy(data['metadata']['labels']) }
+
+with open('./unifi-mongo-stat-deployment.yaml', 'w', encoding='utf-8') as f:
+    yaml.dump(data, f, default_flow_style=False)
+
+with open('./unifi-mongo-config-deployment.yaml') as f:
+    data = yaml.safe_load(f)
+
+data['apiVersion'] = 'apps/v1'
+data['spec']['selector'] = { 'matchLabels': copy.deepcopy(data['metadata']['labels']) }
+
+with open('./unifi-mongo-config-deployment.yaml', 'w', encoding='utf-8') as f:
+    yaml.dump(data, f, default_flow_style=False)
