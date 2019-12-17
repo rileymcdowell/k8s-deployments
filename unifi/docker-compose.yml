@@ -2,7 +2,7 @@ version: "3"
 
 services:
     unifi-web:
-        image: jacobalberty/unifi:5.10.27
+        image: jacobalberty/unifi:5.12.35
         environment:
             RUNAS_UID0: "false"
             TZ: "America/Chicago"
