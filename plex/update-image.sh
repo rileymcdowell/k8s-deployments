@@ -6,12 +6,11 @@ fi
 
 kompose convert --out converted
 
-kubectl apply -Rf pv
-
 pushd converted
 python3 modify_service.py
 python3 modify_claims.py
 python3 modify_deployment.py
 popd
 
-kubectl apply -Rf converted
+# Apply triggers an image update (update definition, scale to zero, scale to one).
+kubectl apply -Rf converted/plex-deployment.out.yaml

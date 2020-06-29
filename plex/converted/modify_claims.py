@@ -14,7 +14,7 @@ config_claim = "plex-config-persistentvolumeclaim"
 transcode_claim = "plex-transcode-persistentvolumeclaim"
 media_claim = "plex-media-persistentvolumeclaim"
 
-for claim, size in [(config_claim, '2Gi'), (transcode_claim, '2Gi'), (media_claim, "2Ti")]:
+for claim, size in [(config_claim, '10Gi'), (transcode_claim, '10Gi'), (media_claim, "2Ti")]:
 
     raw = './' + claim + '.yaml'
     raw_bak = raw + '.bak'
@@ -27,6 +27,8 @@ for claim, size in [(config_claim, '2Gi'), (transcode_claim, '2Gi'), (media_clai
         data = yaml.load(f)
 
     data['spec']['resources']['requests']['storage'] = size
+
+    data['spec']['selector'] = { 'matchLabels': {'reserved.for': 'plex'} }
 
     with open(out, 'w', encoding='utf-8') as f:
         yaml.dump(data, f, default_flow_style=False)

@@ -2,7 +2,7 @@ version: "3"
 
 services:
     plex:
-        image: plexinc/pms-docker
+        image: plexinc/pms-docker:1.19.4.2935-79e214ead
         environment:
             TZ: "America/Chicago"
             HOSTNAME: "plex.lan"
