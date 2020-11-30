@@ -5,7 +5,7 @@ metadata:
   finalizers:
   - kubernetes.io/pv-protection
   labels:
-    reserved.for: plex
+    reserved.for: plex-transcode
 spec:
   accessModes:
   - ReadWriteOnce

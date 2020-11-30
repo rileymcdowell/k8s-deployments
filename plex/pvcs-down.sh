@@ -1,1 +1,3 @@
-../common/pvcs-down.sh
+#!/bin/bash
+
+kubectl delete -f ./yaml/*pvc*.yaml

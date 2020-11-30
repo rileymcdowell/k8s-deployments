@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert --out converted
+    kompose.service.type: LoadBalancer
+    kompose.version: 1.19.0 (f63a961c)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: plex
+  name: plex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: plex
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert --out converted
+        kompose.service.type: LoadBalancer
+        kompose.version: 1.19.0 (f63a961c)
+      creationTimestamp: null
+      labels:
+        io.kompose.service: plex
+    spec:
+      containers:
+      - env:
+        - name: CHANGE_CONFIG_DIR_OWNERSHIP
+          value: 'false'
+        - name: HOSTNAME
+          value: plex.lan
+        - name: PLEX_GID
+          value: '1026'
+        - name: PLEX_UID
+          value: '1026'
+        - name: TZ
+          value: America/Chicago
+        image: plexinc/pms-docker:1.21.0.3616-d87012962
+        name: plex
+        #command: [ "sleep" ]
+        #args: [ "999999999" ]
+        ports:
+        - containerPort: 22
+        - containerPort: 32400
+        - containerPort: 3005
+        - containerPort: 8324
+        - containerPort: 32469
+        - containerPort: 1900
+          protocol: UDP
+        - containerPort: 32410
+          protocol: UDP
+        - containerPort: 32412
+          protocol: UDP
+        - containerPort: 32413
+          protocol: UDP
+        - containerPort: 32414
+          protocol: UDP
+        resources: {}
+        volumeMounts:
+        - mountPath: /config-old
+          name: plex-config
+        - mountPath: /transcode
+          name: plex-transcode
+        - mountPath: /data
+          name: plex-media
+        - mountPath: /config
+          name: plex-config-iscsi
+      restartPolicy: Always
+      volumes:
+      - name: plex-config
+        persistentVolumeClaim:
+          claimName: plex-config
+      - name: plex-transcode
+        persistentVolumeClaim:
+          claimName: plex-transcode
+      - name: plex-media
+        persistentVolumeClaim:
+          claimName: plex-media
+      - name: plex-config-iscsi
+        iscsi:
+          targetPortal: 192.168.1.20
+          iqn: iqn.2000-01.com.synology:nas.Target-1.f7d37a376c
+          lun: 1
+          fsType: ext4
+          readOnly: false
