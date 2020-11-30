@@ -15,7 +15,7 @@ if os.path.exists('./unifi-web-deployment.yaml'):
     os.rename('./unifi-web-deployment.yaml', './unifi-web-deployment.yaml.bak')
 
 with open('./unifi-web-deployment.yaml.bak') as f:
-    data = yaml.load(f)
+    data = yaml.safe_load(f)
 
 # Switch to apps/v1 api from previous beta api
 data['apiVersion'] = 'apps/v1'

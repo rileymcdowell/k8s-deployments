@@ -23,7 +23,7 @@ for claim, size in [(mongo_claim, '4Gi'), (mongo_stat_claim, '4Gi'), (unifi_web_
         os.rename(raw, raw_bak)
 
     with open(raw_bak) as f:
-        data = yaml.load(f)
+        data = yaml.safe_load(f)
 
     data['spec']['resources']['requests']['storage'] = size
 
