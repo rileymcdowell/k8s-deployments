@@ -2,7 +2,7 @@ version: "3"
 
 services:
     unifi-video:
-        image: pducharme/unifi-video-controller:3.10.6
+        image: pducharme/unifi-video-controller:3.10.13
         environment:
             TZ: "America/Chicago"
             DEBUG: 1

@@ -13,7 +13,7 @@ if os.path.exists('./unifi-video-deployment.yaml'):
     os.rename('./unifi-video-deployment.yaml', './unifi-video-deployment.yaml.bak')
 
 with open('./unifi-video-deployment.yaml.bak') as f:
-    data = yaml.load(f)
+    data = yaml.safe_load(f)
 
 # Update to release k8s api
 data['apiVersion'] = 'apps/v1'

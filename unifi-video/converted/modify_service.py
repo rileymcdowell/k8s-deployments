@@ -15,7 +15,7 @@ import yaml
 import codecs
 
 with open(os.path.expanduser('~/deployment-config.yaml')) as f:
-    config = yaml.load(f)
+    config = yaml.safe_load(f)
 
 ip_address = config['unifi-video']['ip-address']
 external_traffic_policy = config['unifi-video']['external-traffic-policy']
@@ -24,7 +24,7 @@ if os.path.exists('./unifi-video-service.yaml'):
     os.rename('./unifi-video-service.yaml', './unifi-video-service.yaml.bak')
 
 with open('./unifi-video-service.yaml.bak') as f:
-    data = yaml.load(f)
+    data = yaml.safe_load(f)
 
 # Write out a version with TCP services only.
 tcp_data = copy.deepcopy(data)

@@ -23,7 +23,7 @@ for claim, size in [(video_claim, '1Gi'), (video_vids_claim, '8Gi')]:
         os.rename(raw, raw_bak)
 
     with open(raw_bak) as f:
-        data = yaml.load(f)
+        data = yaml.safe_load(f)
 
     data['spec']['resources']['requests']['storage'] = size
 
