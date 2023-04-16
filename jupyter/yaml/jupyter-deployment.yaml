@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    name: jupyter 
+  name: jupyter 
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: jupyter 
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: jupyter 
+    spec:
+      containers:
+      - image: jupyter/scipy-notebook
+        name: jupyter
+
+        #command:
+        #  - "sleep"
+        #  - "9999999999"
+
+        env:
+        - name: TZ
+          value: America/Chicago
+        # Disable the token/password for the notebook
+        - name: NOTEBOOK_ARGS
+          value: "--ServerApp.token='' --ServerApp.password=''"
+        # Can't put this in the user home because NFS guests
+        # have to create *77 permission files, but the runtime
+        # files need to be *00. The solution is to move the runtime
+        # files into /tmp
+        - name: JUPYTER_RUNTIME_DIR
+          value: "/tmp"
+
+        ports:
+        - containerPort: 8888
+
+        volumeMounts:
+        - name: jupyter-home
+          mountPath: /home/jovyan/
+
+      enableServiceLinks: false
+
+      restartPolicy: Always
+
+      volumes:
+      - name: jupyter-home
+        persistentVolumeClaim:
+          claimName: jupyter-home
+ 
