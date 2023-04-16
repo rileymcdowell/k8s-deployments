@@ -1,11 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert --out converted
-    kompose.service.type: LoadBalancer
-    kompose.version: 1.19.0 (f63a961c)
-  creationTimestamp: null
   labels:
     io.kompose.service: plex
   name: plex
@@ -18,11 +13,6 @@ spec:
     type: Recreate
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert --out converted
-        kompose.service.type: LoadBalancer
-        kompose.version: 1.19.0 (f63a961c)
-      creationTimestamp: null
       labels:
         io.kompose.service: plex
     spec:
@@ -38,7 +28,7 @@ spec:
           value: '1026'
         - name: TZ
           value: America/Chicago
-        image: plexinc/pms-docker:1.21.0.3616-d87012962
+        image: plexinc/pms-docker:1.32.0.6918-6f393eda1
         name: plex
         #command: [ "sleep" ]
         #args: [ "999999999" ]
@@ -60,16 +50,25 @@ spec:
           protocol: UDP
         resources: {}
         volumeMounts:
-        - mountPath: /config-old
+        - mountPath: "/dev/dri"
+          name: dev-dri
+        - mountPath: "/config-old"
           name: plex-config
-        - mountPath: /transcode
+        - mountPath: "/transcode"
           name: plex-transcode
-        - mountPath: /data
+        - mountPath: "/data"
           name: plex-media
-        - mountPath: /config
+        - mountPath: "/config"
           name: plex-config-iscsi
+        securityContext:
+          privileged: true # Need /dev/dri from host.
+
       restartPolicy: Always
+
       volumes:
+      - name: dev-dri
+        hostPath:
+          path: "/dev/dri"
       - name: plex-config
         persistentVolumeClaim:
           claimName: plex-config
