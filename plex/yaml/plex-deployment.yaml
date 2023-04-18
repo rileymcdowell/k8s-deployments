@@ -69,12 +69,16 @@ spec:
       - name: dev-dri
         hostPath:
           path: "/dev/dri"
+      - name: plex-transcode
+        hostPath:
+          path: /tmp/plex-transcode
+          type: DirectoryOrCreate
       - name: plex-config
         persistentVolumeClaim:
           claimName: plex-config
-      - name: plex-transcode
-        persistentVolumeClaim:
-          claimName: plex-transcode
+      #- name: plex-transcode
+      #  persistentVolumeClaim:
+      #    claimName: plex-transcode
       - name: plex-media
         persistentVolumeClaim:
           claimName: plex-media
