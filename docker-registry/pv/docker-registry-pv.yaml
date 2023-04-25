@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: docker-registry-pv
+  finalizers:
+  - kubernetes.io/pv-protection
+  labels:
+    reserved.for: docker-registry
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 50Gi
+  nfs:
+    path: /volume1/docker-registry/registry
+    server: nas.lan
+  mountOptions:
+  - local_lock=posix
+  - proto=tcp
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-client
+  volumeMode: Filesystem
