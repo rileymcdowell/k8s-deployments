@@ -1,11 +1,11 @@
 version: "3"
 services:
   pihole:
-    image: pihole/pihole:4.3.1-4
+    image: pihole/pihole:v5.2
     ports:
       - "53:53/udp"
       - "80:80/tcp"
-      #- "443:443/tcp" # SSL Version
+      - "443:443/tcp" # SSL Ads Sinkhole
       #- "53:53/tcp" # DNS over tcp?
       #- "67:67/udp" # DHCP?
     environment:
@@ -14,6 +14,7 @@ services:
 
       DNS1: "127.0.0.1"
       DNS2: "192.168.1.1"
+      TZ: "America/Chicago"
 
       IPv6: "False"
       WEBPASSWORD: "" 
@@ -21,8 +22,13 @@ services:
     labels:
       kompose.service.type: LoadBalancer
 
+    dns:
+      - 127.0.0.1
+      - 1.1.1.1
+
     volumes:
       - 'etc-pihole:/etc/pihole/'
+      - 'etc-dnsmasq:/etc/dnsmasq.d/'
       # WARNING: if this log don't exist as a file on the host already
       # docker will try to create a directory in it's place making for lots of errors
       #- 'var-log:/var/log/'
